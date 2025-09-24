@@ -3,35 +3,40 @@ package tobyspring.splearn.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class MemberTest {
+    Member member;
+    PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setUp() {
+        passwordEncoder = new PasswordEncoder() {
+            @Override
+            public String encode(String password) {
+                return password.toUpperCase();
+            }
+
+            @Override
+            public boolean matches(String password, String passwordHash) {
+                return encode(password).equals(passwordHash);
+            }
+        };
+        member = Member.create(new MemberCreateRequest("toby@splearn.app", "Toby", "secret"), passwordEncoder);
+    }
 
     @Test
     @DisplayName("")
     void createMember() {
-        // given
-        var member = new Member("toby@splearn.app", "Toby", "secret");
-
         // when // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
     }
 
     @Test
     @DisplayName("")
-    void constructorNullCheck() {
-        // given // when // then
-        assertThatThrownBy(() -> new Member("toby@splearn.app", null, "secret"))
-                .isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    @DisplayName("")
     void activate() {
-        // given
-        var member = new Member("toby@splearn.app", "Toby", "secret");
-
         // when
         member.activate();
 
@@ -42,9 +47,6 @@ class MemberTest {
     @Test
     @DisplayName("")
     void activateFail() {
-        // given
-        var member = new Member("toby@splearn.app", "Toby", "secret");
-
         // when
         member.activate();
 
@@ -57,7 +59,6 @@ class MemberTest {
     @DisplayName("")
     void deactivate() {
         // given
-        var member = new Member("toby@splearn.app", "Toby", "secret");
         member.activate();
 
         // when
@@ -71,7 +72,6 @@ class MemberTest {
     @DisplayName("")
     void deactivateFail() {
         // given
-        var member = new Member("toby@splearn.app", "Toby", "secret");
 
         // when // then
         assertThatThrownBy(member::deactivate)
@@ -84,5 +84,54 @@ class MemberTest {
         // when // then
         assertThatThrownBy(member::deactivate)
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    @DisplayName("")
+    void verifyPassword() {
+        assertThat(member.verifyPassword("secret", passwordEncoder)).isTrue();
+        assertThat(member.verifyPassword("hello", passwordEncoder)).isFalse();
+    }
+
+    @Test
+    @DisplayName("")
+    void changeNickname() {
+        assertThat(member.getNickname()).isEqualTo("Toby");
+
+        member.changeNickname("Charlie");
+
+        assertThat(member.getNickname()).isEqualTo("Charlie");
+    }
+
+    @Test
+    @DisplayName("")
+    void changePassword() {
+        member.changePassword("verysecret", passwordEncoder);
+
+        assertThat(member.verifyPassword("verysecret", passwordEncoder)).isTrue();
+    }
+
+    @Test
+    @DisplayName("")
+    void isActive() {
+        assertThat(member.isActive()).isFalse();
+
+        member.activate();
+
+        assertThat(member.isActive()).isTrue();
+
+        member.deactivate();
+
+        assertThat(member.isActive()).isFalse();
+    }
+
+    @Test
+    @DisplayName("")
+    void invalidEmail() {
+        assertThatThrownBy(() -> {
+            Member.create(new MemberCreateRequest("invalid email", "Toby", "secret"), passwordEncoder);
+        }).isInstanceOf(IllegalArgumentException.class);
+
+        Member.create(new MemberCreateRequest("hsi@email.com", "Toby", "secret"), passwordEncoder);
     }
 }
