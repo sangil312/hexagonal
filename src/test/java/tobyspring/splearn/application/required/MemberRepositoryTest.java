@@ -6,7 +6,6 @@ import static tobyspring.splearn.domain.MemberFixture.createMemberRegisterReques
 import static tobyspring.splearn.domain.MemberFixture.createPasswordEncoder;
 
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,7 +21,6 @@ class MemberRepositoryTest {
     EntityManager em;
 
     @Test
-    @DisplayName("")
     void createMember() {
         Member member = Member.register(createMemberRegisterRequest(), createPasswordEncoder());
 
@@ -36,7 +34,6 @@ class MemberRepositoryTest {
     }
 
     @Test
-    @DisplayName("")
     void duplicateEmailFail() {
         Member member = Member.register(createMemberRegisterRequest(), createPasswordEncoder());
         memberRepository.save(member);

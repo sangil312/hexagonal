@@ -6,7 +6,6 @@ import static tobyspring.splearn.domain.MemberFixture.createMemberRegisterReques
 import static tobyspring.splearn.domain.MemberFixture.createPasswordEncoder;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class MemberTest {
@@ -20,14 +19,12 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("")
     void registerMember() {
         // when // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
     }
 
     @Test
-    @DisplayName("")
     void activate() {
         // when
         member.activate();
@@ -37,7 +34,6 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("")
     void activateFail() {
         // when
         member.activate();
@@ -48,7 +44,6 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("")
     void deactivate() {
         // given
         member.activate();
@@ -61,7 +56,6 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("")
     void deactivateFail() {
         // given
 
@@ -79,32 +73,28 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("")
     void verifyPassword() {
-        assertThat(member.verifyPassword("secret", passwordEncoder)).isTrue();
+        assertThat(member.verifyPassword("verysecret", passwordEncoder)).isTrue();
         assertThat(member.verifyPassword("hello", passwordEncoder)).isFalse();
     }
 
     @Test
-    @DisplayName("")
     void changeNickname() {
-        assertThat(member.getNickname()).isEqualTo("Toby");
-
-        member.changeNickname("Charlie");
-
         assertThat(member.getNickname()).isEqualTo("Charlie");
+
+        member.changeNickname("Charlie2");
+
+        assertThat(member.getNickname()).isEqualTo("Charlie2");
     }
 
     @Test
-    @DisplayName("")
     void changePassword() {
-        member.changePassword("verysecret", passwordEncoder);
+        member.changePassword("verysecret2", passwordEncoder);
 
-        assertThat(member.verifyPassword("verysecret", passwordEncoder)).isTrue();
+        assertThat(member.verifyPassword("verysecret2", passwordEncoder)).isTrue();
     }
 
     @Test
-    @DisplayName("")
     void isActive() {
         assertThat(member.isActive()).isFalse();
 
@@ -118,7 +108,6 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("")
     void invalidEmail() {
         assertThatThrownBy(() -> Member.register(createMemberRegisterRequest("invalid email"), passwordEncoder))
                 .isInstanceOf(IllegalArgumentException.class);
