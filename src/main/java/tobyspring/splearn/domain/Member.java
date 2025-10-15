@@ -1,6 +1,6 @@
 package tobyspring.splearn.domain;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

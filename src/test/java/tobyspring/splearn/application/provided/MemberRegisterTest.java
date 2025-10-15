@@ -18,7 +18,7 @@ import tobyspring.splearn.domain.MemberStatus;
 @SpringBootTest
 @Transactional
 @Import(SplearnTestConfiguration.class)
-public record MemberRegisterTest(
+record MemberRegisterTest(
         MemberRegister memberRegister,
         EntityManager entityManager
 ) {
@@ -53,12 +53,12 @@ public record MemberRegisterTest(
 
     @Test
     void memberRegisterRequestFail() {
-        extracted(new MemberRegisterRequest("hsi@test.com", "hsi", "longsecret"));
-        extracted(new MemberRegisterRequest("hsi@test.com", "hansangil____________________________", "longsecret"));
-        extracted(new MemberRegisterRequest("hsitest.com", "hansangil", "secret"));
+        checkValidation(new MemberRegisterRequest("hsi@test.com", "hsi", "longsecret"));
+        checkValidation(new MemberRegisterRequest("hsi@test.com", "hansangil____________________________", "longsecret"));
+        checkValidation(new MemberRegisterRequest("hsitest.com", "hansangil", "secret"));
     }
 
-    private void extracted(MemberRegisterRequest invalid) {
+    private void checkValidation(MemberRegisterRequest invalid) {
         assertThatThrownBy(() -> memberRegister.register(invalid))
                 .isInstanceOf(ConstraintViolationException.class);
     }

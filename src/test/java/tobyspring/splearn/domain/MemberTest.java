@@ -112,6 +112,6 @@ class MemberTest {
         assertThatThrownBy(() -> Member.register(createMemberRegisterRequest("invalid email"), passwordEncoder))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        createMemberRegisterRequest();
+//        createMemberRegisterRequest();
     }
 }
