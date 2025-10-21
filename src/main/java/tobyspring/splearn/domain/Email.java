@@ -1,13 +1,11 @@
 package tobyspring.splearn.domain;
 
-import jakarta.persistence.Embeddable;
 import java.util.regex.Pattern;
 
-@Embeddable
 public record Email(
-        String address
+       String address
 ) {
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
 
     // 컴팩트 생성자
     public Email {
