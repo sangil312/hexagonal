@@ -1,9 +1,10 @@
-package tobyspring.splearn.domain;
+package tobyspring.splearn.domain.member;
 
 
-import static org.assertj.core.api.Assertions.*;
-import static tobyspring.splearn.domain.MemberFixture.createMemberRegisterRequest;
-import static tobyspring.splearn.domain.MemberFixture.createPasswordEncoder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static tobyspring.splearn.domain.member.MemberFixture.createMemberRegisterRequest;
+import static tobyspring.splearn.domain.member.MemberFixture.createPasswordEncoder;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,54 +21,47 @@ class MemberTest {
 
     @Test
     void registerMember() {
-        // when // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
+        assertThat(member.getDetail().getRegisteredAt()).isNotNull();
     }
 
     @Test
     void activate() {
-        // when
+        assertThat(member.getDetail().getActivatedAt()).isNull();
+
         member.activate();
 
-        // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(member.getDetail().getActivatedAt()).isNotNull();
     }
 
     @Test
     void activateFail() {
-        // when
         member.activate();
 
-        // then
         assertThatThrownBy(member::activate)
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void deactivate() {
-        // given
         member.activate();
 
-        // when
         member.deactivate();
 
-        // then
         assertThat(member.getStatus()).isEqualTo(MemberStatus.DEACTIVATED);
+        assertThat(member.getDetail().getDeactivatedAt()).isNotNull();
     }
 
     @Test
     void deactivateFail() {
-        // given
 
-        // when // then
         assertThatThrownBy(member::deactivate)
                 .isInstanceOf(IllegalStateException.class);
 
-        // given
         member.activate();
         member.deactivate();
 
-        // when // then
         assertThatThrownBy(member::deactivate)
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -113,5 +107,16 @@ class MemberTest {
                 .isInstanceOf(IllegalArgumentException.class);
 
 //        createMemberRegisterRequest();
+    }
+
+    @Test
+    void updateInfo() {
+        member.activate();
+
+        MemberInfoUpdateRequest request = new MemberInfoUpdateRequest("Leo", "seoul", "자기소개");
+        member.updateInfo(request);
+
+        assertThat(member.getNickname()).isEqualTo(request.nickName());
+        assertThat(member.getDetail().getProfile().address()).isEqualTo(request.profileAddress());
     }
 }
